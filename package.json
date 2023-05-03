@@ -9,7 +9,10 @@
     "nodemailer"
   ],
   "repository": {
-  },
+    "type": "git",
+    "url": "https://github.com/9223000/-ssa_node-red-smtp.git",
+    "directory": ""
+  },  
   "license": "Apache-2.0",
   "keywords": [
     "node-red",
