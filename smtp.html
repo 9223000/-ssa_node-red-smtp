@@ -1,0 +1,131 @@
+<script type="text/html" data-template-name="SMTP">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-envelope"></i> <span data-i18n="email.label.to"></span></label>
+        <input type="text" id="node-input-name" placeholder="email@address.com">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-globe"></i> <span data-i18n="email.label.server"></span></label>
+        <input type="text" id="node-input-server" placeholder="smtp.gmail.com">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-random"></i> <span data-i18n="email.label.port"></span></label>
+        <input type="text" id="node-input-port" placeholder="465" style="width:100px">
+        <label style="width:40px"> </label>
+        <input type="checkbox" id="node-input-secure" style="display:inline-block; width:20px; vertical-align:baseline;">
+        <span data-i18n="email.label.useSecureConnection"></span>
+    </div>
+    <div class="form-row">
+        <label for="node-input-authtype"><i class="fa fa-tasks"></i> <span data-i18n="email.label.authtype"></span></label>
+        <select type="text" id="node-input-authtype">
+            <option value="BASIC">Basic</option>
+            <option value="XOAUTH2">XOAuth2</option>
+            <option value="NONE">None</option>
+        </select>
+    </div>
+    <div class="form-row node-input-userid">
+        <label for="node-input-userid"><i class="fa fa-user"></i> <span data-i18n="email.label.userid"></span></label>
+        <input type="text" id="node-input-userid">
+    </div>
+    <div class="form-row node-input-password">
+        <label for="node-input-password"><i class="fa fa-lock"></i> <span data-i18n="email.label.password"></span></label>
+        <input type="password" id="node-input-password">
+    </div>
+
+    <div class="form-row node-input-saslformat" style="display: none;">
+        <label for="node-input-saslformat"><i class="fa fa-code"></i> <span data-i18n="email.label.saslformat"></span></label>
+        <input type="checkbox" id="node-input-saslformat" style="width: auto;">
+    </div>
+    <div class="form-row node-input-token" style="display: none;">
+        <label for="node-input-token"><i class="fa fa-lock"></i> <span data-i18n="email.label.token"></span></label>
+        <input type="text" id="node-input-token" placeholder="oauth2Response.access_token">
+    </div>
+    <br/>
+    <div class="form-row node-input-useTLS">
+        <label for="node-input-useTLS"><i class="fa fa-lock"></i> <span data-i18n="email.label.useTLS"></label>
+        <input type="checkbox" id="node-input-tls" style="display:inline-block; width:20px; vertical-align:baseline;">
+        <span data-i18n="email.label.rejectUnauthorised"></span>
+    </div>
+    <div class="form-row">
+        <label for="node-input-dname"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-dname" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-tips" id="node-tip"><span data-i18n="[html]email.tip.cred"></span></div>
+</script>
+
+<script type="text/javascript">
+(function() {
+    RED.nodes.registerType('SMTP',{
+        category: 'SSA',
+        color:"#c7e9c0",
+        defaults: {
+            server: {value:"smtp.gmail.com",required:true},
+            port: {value:"465",required:true},
+            authtype: {value: "BASIC"},
+            saslformat: {value: true},
+            token: {value: "oauth2Response.access_token"},
+            secure: {value: true},
+            tls: {value: true},
+            name: {value:""},
+            dname: {value:""}
+        },
+        credentials: {
+            userid: {type:"text"},
+            password: {type: "password"},
+            global: { type:"boolean"}
+        },
+        inputs:1,
+        outputs:2,
+        outputLabels: ["success","error"],        
+        icon: "envelope.png",
+        align: "right",
+        paletteLabel: function() {
+            return this._("email.email");
+        },
+        label: function() {
+            return this.dname||this.name||this._("email.email");
+        },
+        labelStyle: function() {
+            return (this.dname)?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            if (this.authtype === undefined) {
+                this.authtype = "BASIC";
+                $("#node-input-authtype").val('BASIC');
+            }
+            $("#node-input-authtype").change(function() {
+                var protocol = $("#node-input-authtype").val();
+                if (protocol === "BASIC") {
+                    $(".node-input-userid").show();
+                    $(".node-input-password").show();
+                    $(".node-input-saslformat").hide();
+                    $(".node-input-token").hide();
+                    $(".node-input-useTLS").show();
+                } else if (protocol === "NONE") {
+                    $(".node-input-userid").hide();
+                    $(".node-input-password").hide();
+                    $(".node-input-saslformat").hide();
+                    $(".node-input-token").hide();
+                    $(".node-input-useTLS").hide();
+                } else {
+                    $(".node-input-userid").show();
+                    $(".node-input-password").hide();
+                    $(".node-input-saslformat").show();
+                    $(".node-input-token").show();
+                    $("#node-input-fetch").val("trigger");
+                    $("#node-input-fetch").change();
+                    $(".node-input-useTLS").show();
+                }
+            });
+            if (this.credentials.global) {
+                $('#node-tip').show();
+            } else {
+                $('#node-tip').hide();
+            }
+            $("#node-input-token").typedInput({
+                type:'msg',
+                types:['msg']
+            });
+        }
+    });
+})();
+</script>

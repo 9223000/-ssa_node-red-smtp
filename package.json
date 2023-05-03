@@ -1,0 +1,32 @@
+{
+  "name": "@ssa/node-red-smtp",
+  "version": "0.0.1",
+  "description": "Node-RED node to send SMTP emails.",
+  "dependencies": {
+    "nodemailer": "^6.9.1"
+  },
+  "bundledDependencies": [
+    "nodemailer"
+  ],
+  "repository": {
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "node-red",
+    "smtp"
+  ],
+  "node-red": {
+    "version": ">=1.0.0",
+    "nodes": {
+      "SMTP": "smtp.js"
+    }
+  },
+  "author": {
+    "name": "Sergey Sharov",
+    "email": "9223000@mail.ru",
+    "url": "http://nodered.org"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
